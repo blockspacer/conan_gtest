@@ -162,15 +162,18 @@ class GTestConan(conan_build_helper.CMakePackage):
         return cmake
 
     def build(self):
-        for patch in self.conan_data["patches"][self.patch_version]:
-            tools.patch(**patch)
+        #for patch in self.conan_data["patches"][self.patch_version]:
+        #    tools.patch(**patch)
+        tools.patch(patch_file = "patches/gtest-1.10.0.patch", base_path = self._source_subfolder)
         cmake = self._configure_cmake()
         cmake.build()
+        cmake.install()
 
     def package(self):
         self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
-        cmake = self._configure_cmake()
-        cmake.install()
+        # TODO: file INSTALL cannot set permissions on "/usr/local/include"
+        #cmake = self._configure_cmake()
+        #cmake.install()
         tools.rmdir(os.path.join(self.package_folder, "lib", "pkgconfig"))
         tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))
         for pdb_file in glob.glob(os.path.join(self.package_folder, "lib", "*.pdb")):
@@ -197,5 +200,5 @@ class GTestConan(conan_build_helper.CMakePackage):
             if Version(self.settings.compiler.version.value) >= "15":
                 self.cpp_info.defines.append("GTEST_LANG_CXX11=1")
                 self.cpp_info.defines.append("GTEST_HAS_TR1_TUPLE=0")
-        self.cpp_info.names["cmake_find_package"] = "GTest"
-        self.cpp_info.names["cmake_find_package_multi"] = "GTest"
+        #self.cpp_info.names["cmake_find_package"] = "GTest"
+        #self.cpp_info.names["cmake_find_package_multi"] = "GTest"
