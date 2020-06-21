@@ -39,3 +39,4 @@ tmp/
 # IDE
 .idea/*
 *.directory
+*.txt.user

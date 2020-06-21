@@ -40,11 +40,14 @@ option(ENABLE_TSAN
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 if(COMPILE_WITH_LLVM_TOOLS)
+  message(STATUS
+    "Using COMPILE_WITH_LLVM_TOOLS")
   # do not check compile in conanbuildinfo
   # cause we will switch to other compiler after conan install
   set(CONAN_DISABLE_CHECK_COMPILER ON)
-else()
-  message(FATAL_ERROR "enable compile_with_llvm_tools")
+else(COMPILE_WITH_LLVM_TOOLS)
+  message(STATUS
+    "Disabled COMPILE_WITH_LLVM_TOOLS")
 endif(COMPILE_WITH_LLVM_TOOLS)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
