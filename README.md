@@ -44,7 +44,8 @@ CONAN_REVISIONS_ENABLED=1 \
       conan/stable \
       -s build_type=Release \
       --profile clang \
-      --build missing
+      --build missing \
+      --build cascade
 
 CONAN_REVISIONS_ENABLED=1 \
     CONAN_VERBOSE_TRACEBACK=1 \
@@ -59,9 +60,22 @@ CONAN_REVISIONS_ENABLED=1 \
 
 ## Build with sanitizers support
 
-Use `-o llvm_tools:enable_msan=True` and `-e *:compile_with_llvm_tools=True` like so:
+Use `-o llvm_tools:enable_tsan=True` and `-e *:compile_with_llvm_tools=True` like so:
 
 ```bash
+export CC=$(find ~/.conan/data/llvm_tools/master/conan/stable/package/ -path "*bin/clang" | head -n 1)
+
+export CXX=$(find ~/.conan/data/llvm_tools/master/conan/stable/package/ -path "*bin/clang++" | head -n 1)
+
+export TSAN_OPTIONS="handle_segv=0:disable_coredump=0:abort_on_error=1:report_thread_leaks=0"
+
+# make sure that env. var. TSAN_SYMBOLIZER_PATH points to llvm-symbolizer
+# conan package llvm_tools provides llvm-symbolizer
+# and prints its path during cmake configure step
+# echo $TSAN_SYMBOLIZER_PATH
+export TSAN_SYMBOLIZER_PATH=$(find ~/.conan/data/llvm_tools/master/conan/stable/package/ -path "*bin/llvm-symbolizer" | head -n 1)
+
+# NOTE: NO `--profile` argument cause we use `CXX` env. var
 CONAN_REVISIONS_ENABLED=1 \
     CONAN_VERBOSE_TRACEBACK=1 \
     CONAN_PRINT_RUN_COMMANDS=1 \
@@ -78,38 +92,13 @@ CONAN_REVISIONS_ENABLED=1 \
       -s llvm_tools:compiler.libcxx=libstdc++11 \
       --profile clang \
       -s llvm_tools:build_type=Release \
-      -o llvm_tools:enable_msan=True \
+      -o llvm_tools:enable_tsan=True \
       -o llvm_tools:include_what_you_use=False \
       -e conan_gtest:compile_with_llvm_tools=True \
       -e conan_gtest:enable_llvm_tools=True \
       -e conan_gtest_test_package:compile_with_llvm_tools=True \
       -e conan_gtest_test_package:enable_llvm_tools=True \
-      -o conan_gtest:enable_msan=True
-```
-
-Perform checks:
-
-```bash
-# must exist
-find ~/.conan -name libclang_rt.msan_cxx-x86_64.a
-
-# see https://stackoverflow.com/a/47705420
-nm -an $(find ~/.conan -name *libc++.so.1 | grep "llvm_tools/master/conan/stable/package/") | grep san
-```
-
-Validate that `ldd` points to instrumented `libc++`, see https://stackoverflow.com/a/35197295
-
-Validate that compile log contains `-fsanitize=`
-
-You can test that sanitizer can catch error by adding into `SalutationTest` from `test_package/test_package.cpp` code:
-
-```cpp
-  // MSAN test
-  int r;
-  int* a = new int[10];
-  a[5] = 0;
-  if (a[r])
-    printf("xx\n");
+      -o conan_gtest:enable_tsan=True
 ```
 
 ## conan Flow

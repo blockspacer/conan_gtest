@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.4)
 project(cmake_wrapper)
 
 option(COMPILE_WITH_LLVM_TOOLS
@@ -55,6 +55,32 @@ endif()
 
 find_package(cmake_helper_utils REQUIRED)
 
+if(ENABLE_MSAN)
+  add_msan_flags()
+endif(ENABLE_MSAN)
+
+if(ENABLE_TSAN)
+  add_tsan_flags()
+endif(ENABLE_TSAN)
+
+if(ENABLE_ASAN)
+  add_asan_flags()
+endif(ENABLE_ASAN)
+
+if(ENABLE_UBSAN)
+  add_ubsan_flags()
+endif(ENABLE_UBSAN)
+
+if(COMPILE_WITH_LLVM_TOOLS)
+  message(STATUS
+    "Using COMPILE_WITH_LLVM_TOOLS")
+  # force change CMAKE_*_COMPILER and CMAKE_LINKER to clang from conan
+  compile_with_llvm_tools() # from cmake_helper_utils (conan package)
+else(COMPILE_WITH_LLVM_TOOLS)
+  message(STATUS
+    "Disabled COMPILE_WITH_LLVM_TOOLS")
+endif(COMPILE_WITH_LLVM_TOOLS)
+
 # prefer ASCII for folder names
 force_latin_paths() # from cmake_helper_utils (conan package)
 
@@ -69,16 +95,6 @@ if(MSVC)
     add_definitions(-DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0)
   endif(MSVC_VERSION AND MSVC_VERSION GREATER_EQUAL 1910)
 endif(MSVC)
-
-if(COMPILE_WITH_LLVM_TOOLS)
-  message(STATUS
-    "Using COMPILE_WITH_LLVM_TOOLS")
-  # force change CMAKE_*_COMPILER and CMAKE_LINKER to clang from conan
-  compile_with_llvm_tools() # from cmake_helper_utils (conan package)
-else(COMPILE_WITH_LLVM_TOOLS)
-  message(STATUS
-    "Disabled COMPILE_WITH_LLVM_TOOLS")
-endif(COMPILE_WITH_LLVM_TOOLS)
 
 if(ENABLE_MSAN OR ENABLE_TSAN OR ENABLE_ASAN OR ENABLE_UBSAN)
   message(STATUS
