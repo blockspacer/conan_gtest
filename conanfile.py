@@ -26,7 +26,7 @@ class GTestConan(conan_build_helper.CMakePackage):
     license = "BSD-3-Clause"
     topics = ("conan", "gtest", "testing", "google-testing", "unit-test")
     exports_sources = ["LICENSE", "VERSION", "*.md", "include/*", "src/*",
-                       "cmake/*", "CMakeLists.txt", "tests/*", "benchmarks/*",
+                       "cmake/*", "examples/*", "CMakeLists.txt", "tests/*", "benchmarks/*",
                        "scripts/*", "tools/*", "codegen/*", "assets/*",
                        "assets/configuration_files/*", "assets/icu/*", "assets",
                        "docs/*", "licenses/*", "patches/*", "resources/*",
