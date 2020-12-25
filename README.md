@@ -56,6 +56,9 @@ CONAN_REVISIONS_ENABLED=1 \
       -c --retry 3 \
       --retry-wait 10 \
       --force
+
+# clean build cache
+conan remove "*" --build --force
 ```
 
 ## Build with sanitizers support
@@ -99,6 +102,9 @@ CONAN_REVISIONS_ENABLED=1 \
       -e conan_gtest_test_package:compile_with_llvm_tools=True \
       -e conan_gtest_test_package:enable_llvm_tools=True \
       -o conan_gtest:enable_tsan=True
+
+# clean build cache
+conan remove "*" --build --force
 ```
 
 ## conan Flow
