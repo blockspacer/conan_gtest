@@ -21,7 +21,8 @@ class GTestConan(conan_build_helper.CMakePackage):
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://github.com/google/googletest"
     repo_url = "https://github.com/google/googletest.git"
-    version = "release-1.10.0"
+    version = "stable"
+    commit = "0a3a3a845e136a9a6ccd8e9b924b848840f22b7b"
     patch_version = "1.10.0"
     license = "BSD-3-Clause"
     topics = ("conan", "gtest", "testing", "google-testing", "unit-test")
@@ -126,7 +127,10 @@ class GTestConan(conan_build_helper.CMakePackage):
         #tools.get(**self.conan_data["sources"][self.version])
         #extracted_dir = "googletest-release-" + self.version
         #os.rename(extracted_dir, self._source_subfolder)
-        self.run('git clone -b {} --progress --depth 100 --recursive --recurse-submodules {} {}'.format(self.version, self.repo_url, self._source_subfolder))
+        self.run('git clone -b {} --progress --depth 100 --recursive --recurse-submodules {} {}'.format("master", self.repo_url, self._source_subfolder))
+        with tools.chdir(self._source_subfolder):
+          if self.commit:
+            self.run('git checkout {}'.format(self.commit))
 
     def _configure_cmake(self):
         cmake = CMake(self)

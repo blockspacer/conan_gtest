@@ -30,7 +30,7 @@ $LLVM_CONFIG --cxxflags
 ```bash
 conan remote add conan-center https://api.bintray.com/conan/conan/conan-center False
 
-export PKG_NAME=conan_gtest/master@conan/stable
+export PKG_NAME=conan_gtest/stable@conan/stable
 
 (CONAN_REVISIONS_ENABLED=1 \
     conan remove --force $PKG_NAME || true)
@@ -115,5 +115,5 @@ conan install --build missing --profile clang  -s build_type=Release .
 conan build . --build-folder=.
 conan package --build-folder=. .
 conan export-pkg . conan/stable --settings build_type=Release --force --profile clang
-conan test test_package conan_gtest/master@conan/stable --settings build_type=Release --profile clang
+conan test test_package conan_gtest/stable@conan/stable --settings build_type=Release --profile clang
 ```
