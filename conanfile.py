@@ -137,7 +137,7 @@ class GTestConan(conan_build_helper.CMakePackage):
         #tools.get(**self.conan_data["sources"][self.version])
         #extracted_dir = "googletest-release-" + self.version
         #os.rename(extracted_dir, self._source_subfolder)
-        self.run('git clone -b {} --progress --depth 100 --recursive --recurse-submodules {} {}'.format("master", self.repo_url, self._source_subfolder))
+        self.run('git clone -b {} --progress --depth 100 --recursive --recurse-submodules {} {}'.format("main", self.repo_url, self._source_subfolder))
         with tools.chdir(self._source_subfolder):
           if self.commit:
             self.run('git checkout {}'.format(self.commit))
