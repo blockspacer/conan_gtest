@@ -117,7 +117,7 @@ endif()
 #target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
 target_link_libraries(${PROJECT_NAME} CONAN_PKG::conan_gtest)
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(WITH_GMOCK)
     target_compile_definitions(${PROJECT_NAME} PRIVATE WITH_GMOCK)
 endif()
