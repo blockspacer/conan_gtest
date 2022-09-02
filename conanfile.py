@@ -176,22 +176,24 @@ class GTestConan(conan_build_helper.CMakePackage):
         return cmake
 
     def build(self):
-        #for patch in self.conan_data["patches"][self.patch_version]:
-        #    tools.patch(**patch)
-        tools.patch(patch_file = "patches/gtest-1.10.0.patch", base_path = self._source_subfolder)
-        cmake = self._configure_cmake()
-        cmake.build()
-        cmake.install()
+        with tools.vcvars(self.settings, only_diff=False): # https://github.com/conan-io/conan/issues/6577
+            #for patch in self.conan_data["patches"][self.patch_version]:
+            #    tools.patch(**patch)
+            tools.patch(patch_file = "patches/gtest-1.10.0.patch", base_path = self._source_subfolder)
+            cmake = self._configure_cmake()
+            cmake.build()
+            cmake.install()
 
     def package(self):
-        self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
-        # TODO: file INSTALL cannot set permissions on "/usr/local/include"
-        #cmake = self._configure_cmake()
-        #cmake.install()
-        tools.rmdir(os.path.join(self.package_folder, "lib", "pkgconfig"))
-        tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))
-        for pdb_file in glob.glob(os.path.join(self.package_folder, "lib", "*.pdb")):
-            os.unlink(pdb_file)
+        with tools.vcvars(self.settings, only_diff=False): # https://github.com/conan-io/conan/issues/6577
+            self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
+            # TODO: file INSTALL cannot set permissions on "/usr/local/include"
+            #cmake = self._configure_cmake()
+            #cmake.install()
+            tools.rmdir(os.path.join(self.package_folder, "lib", "pkgconfig"))
+            tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))
+            for pdb_file in glob.glob(os.path.join(self.package_folder, "lib", "*.pdb")):
+                os.unlink(pdb_file)
 
     def package_id(self):
         del self.info.options.no_main
